@@ -11,6 +11,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector as mc
 from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
+import mysql_comn
 
 
 
@@ -117,12 +118,7 @@ class Ui_Userlist(object):
 
     def select_data(self):
         try:
-            mydb = mc.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="dbms"
-            )
+            mydb = mysql_comn.mydb
 
             mycursor = mydb.cursor()
             mycursor.execute("SELECT * FROM acc")

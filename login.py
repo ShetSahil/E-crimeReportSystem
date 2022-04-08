@@ -12,6 +12,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 import res,sys
 import mysql.connector
+import mysql_comn
+
 
 class Ui_Dialog(object):
     pushButton_submitsignal = QtCore.pyqtSignal()
@@ -150,12 +152,7 @@ class Ui_Dialog(object):
                     
         print('Button Clicked')
         print(self.lineEdit.text())
-        mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="dbms"
-        )
+        mydb = mysql_comn.mydb
 
         mycursor = mydb.cursor()
 

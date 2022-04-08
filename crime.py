@@ -14,6 +14,7 @@ import sys
 from PyQt5.QtWidgets import QMessageBox
 import mysql.connector
 from datetime import date, datetime#tocopy
+import mysql_comn
 
 class Ui_pnl_user(object):
     #pushButton_submitsignal2 = QtCore.pyqtSignal()
@@ -243,13 +244,8 @@ class Ui_pnl_user(object):
         isvalid=True
                 
         if all((len(date1),checkbox, len(time1), len(type1), len(overview),len(location),len(gender),len(description))):
-                try:     
-                        mydb = mysql.connector.connect(
-                        host="localhost",
-                        user="root",
-                        password="",
-                        database="dbms"
-                        )
+                try:
+                        mydb = mysql_comn.mydb
                         mycursor = mydb.cursor()
                         
                         AmountOfRow = mycursor.rowcount

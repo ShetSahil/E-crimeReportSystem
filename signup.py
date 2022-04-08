@@ -12,6 +12,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 import sys,lg
 import mysql.connector
+import mysql_comn
 
 class Ui_Form(object):
     pushButton_submitsignal = QtCore.pyqtSignal() #tocopy
@@ -210,12 +211,7 @@ class Ui_Form(object):
         #if len(uid) == len(fname) == len(Email) == len(un) == len(mobile) == len(add) == len(pwd) == TRUE:
         if all((len(uid), len(fname), len(Email), len(un),len(mobile),len(add),len(pwd))):
                 try:     
-                        mydb = mysql.connector.connect(
-                        host="localhost",
-                        user="root",
-                        password="",
-                        database="dbms"
-                        )
+                        mydb = mysql_comn.mydb
                         mycursor = mydb.cursor()
                         
                         AmountOfRow = mycursor.rowcount

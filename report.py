@@ -13,6 +13,8 @@ import sys
 from datetime import datetime#tocopy
 from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
 import mysql.connector as mc
+import mysql_comn
+
 
 class Ui_pnl_user(object):
     def setupUi(self, pnl_user):
@@ -139,13 +141,7 @@ class Ui_pnl_user(object):
 
     def select_data(self):
         try:
-            mydb = mc.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="dbms"
-            )
-
+            mydb = mysql_comn.mydb
             mycursor = mydb.cursor()
             mycursor.execute("SELECT * FROM crimereport")
 
