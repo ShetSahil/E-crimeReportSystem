@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="all">
+    <file>ALLCASES.png</file>
+    <file>NEW CASES.png</file>
+  </qresource>
+</RCC>
