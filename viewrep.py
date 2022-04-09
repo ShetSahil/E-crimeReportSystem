@@ -10,6 +10,7 @@
 
 from audioop import add
 from datetime import datetime
+from sqlite3 import connect
 from PyQt5 import QtCore, QtGui, QtWidgets
 # from PyQt5.QtCore import QString
 import sys
@@ -21,7 +22,7 @@ class Ui_ReportForm(object):
 
 
         def setupUi(self, ReportForm):
-                self.currentCrimeID = 5
+                self.currentCrimeID = os.getenv('setCurrentCrimeID')
                 ReportForm.setObjectName("ReportForm")
                 print("from view page: " , self.currentCrimeID)
                 ReportForm.resize(1406, 800)
@@ -121,7 +122,7 @@ class Ui_ReportForm(object):
                 #self.select_data()
                 QtCore.QMetaObject.connectSlotsByName(ReportForm)
                 self.mysql_get()
-
+                self.ok_pushbutton.clicked.connect(self.changestatus)
         def retranslateUi(self, ReportForm):
                 _translate = QtCore.QCoreApplication.translate
                 ReportForm.setWindowTitle(_translate("ReportForm", "Form"))
@@ -143,9 +144,9 @@ class Ui_ReportForm(object):
                 self.mobile_label.setText(_translate("ReportForm", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Mobile No:</span></p></body></html>"))
                 self.address_label.setText(_translate("ReportForm", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Address:</span></p></body></html>"))
                 self.username_label.setText(_translate("ReportForm", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Username:</span></p></body></html>"))
-                self.comboBox.setItemText(0, _translate("ReportForm", "Pending"))
-                self.comboBox.setItemText(1, _translate("ReportForm", "Approve"))
-                self.comboBox.setItemText(2, _translate("ReportForm", "Reject"))
+                self.comboBox.setItemText(0, _translate("ReportForm", "pending"))
+                self.comboBox.setItemText(1, _translate("ReportForm", "approved"))
+                self.comboBox.setItemText(2, _translate("ReportForm", "rejected"))
                 self.ok_pushbutton.setText(_translate("ReportForm", "OK"))
 
 
@@ -155,12 +156,12 @@ class Ui_ReportForm(object):
         def mysql_get(self):
                 mycursor = mydb.cursor()
                 try:
-                        sql_query = "SELECT a.full_name, a.E_mail, a.username, a.mobile_no , a.add , b.Date, b.Time, b.Overview, b.Gender, b.Description, b.Type, b.Location  from acc as a INNER JOIN crimereport as b ON a.`Srno.` = b.`P_id`  where b.id = '%s'"
-                        mycursor.execute( "SELECT a.full_name, a.E_mail, a.username, a.mobile_no , a.add , b.Date, b.Time, b.Overview, b.Gender, b.Description, b.Type, b.Location  from acc as a INNER JOIN crimereport as b ON a.`Srno.` = b.`P_id`  where b.id = '1' ")
+                        # sql_query = "SELECT a.full_name, a.E_mail, a.username, a.mobile_no , a.add , b.Date, b.Time, b.Overview, b.Gender, b.Description, b.Type, b.Location  from acc as a INNER JOIN crimereport as b ON a.`Srno.` = b.`P_id`  where b.id = '%s'"
+                        mycursor.execute( "SELECT a.full_name, a.E_mail, a.username, a.mobile_no , a.add , b.Date, b.Time, b.Overview, b.Gender, b.Description, b.Type, b.Location  from acc as a INNER JOIN crimereport as b ON a.`Srno.` = b.`P_id`  where b.id = '" + self.currentCrimeID + "'")
                         result = mycursor.fetchall()
                         array = [self.date_label, self.time_label,  self.type_label , self.overview_label, self.adhaar_label, self.fullname_label, self.email_label , self.status_label, self.mobile_label, self.address_label, self.username_label, self.gender_label, self.location_label, self.overview_label_4]
                         for row_number, row_data in enumerate(result):
-                                print(row_data[2])
+                                # print(row_data[2])
                                 fullname = row_data[0]
                                 email = row_data[1]
                                 username = row_data[2]
@@ -180,13 +181,22 @@ class Ui_ReportForm(object):
                 array_label = ["date", "time", "type_crime", "overview", "adhar no", "fullname", "email", "false", "mobileno", "address", "username", "gender", "location", "description"]
 
                 for i in range(len(array)):
-                        labelText = array_label[i] 
-                        labelText += "  : "  + str(array_val[i])
-
-                        array[i].setText( labelText )
+                        array[i].setText(  array_label[i]  +  "  : "  + str(array_val[i])  )
                         # array[i].setText( labelText )
                         # pass
-      
+                # mycursor.close()
+
+        def changestatus(self):
+                status = self.comboBox.currentText()
+                mycursor = mydb.cursor()
+                try:
+                        mycursor.execute( "UPDATE crimereport set status ='" + status + "'  WHERE id =  '" + self.currentCrimeID + "'")
+                        mydb.commit()
+
+                except Error as err:
+                        print(err)
+                # mycursor.close()
+
 if __name__ == "__main__":
         app = QtWidgets.QApplication(sys.argv)
         Dialog = QtWidgets.QWidget()

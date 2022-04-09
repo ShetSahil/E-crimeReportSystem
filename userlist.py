@@ -116,7 +116,7 @@ class Ui_Userlist(object):
             print(q.row())  
             print(self.tableWidget.item(q.row(), 1).text())
         # self.C_id= q.row()
-        os.environ['setCurrentCrimeID'] = str(q.row())
+        os.environ['setCurrentCrimeID'] = str(q.row() + 1)  
         self.switch_window_new.emit()
 
     def retranslateUi(self, Userlist):
