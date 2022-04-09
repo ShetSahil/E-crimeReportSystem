@@ -12,11 +12,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import mysql.connector as mc
 from PyQt5.QtWidgets import QTableWidgetItem, QMessageBox
 import mysql_comn
-
+import os
 
 
 class Ui_Userlist(object):
+    switch_window_new = QtCore.pyqtSignal()
+    # C_id = 0
     def setupUi(self, Userlist):
+        # self.switch_window = QtCore.pyqtSignal()
+
         Userlist.setObjectName("Userlist")
         Userlist.resize(1400, 800)
         Userlist.setStyleSheet("background: #FFFFFF;\n"
@@ -100,6 +104,21 @@ class Ui_Userlist(object):
         self.select_data()
         QtCore.QMetaObject.connectSlotsByName(Userlist)
 
+
+        #functions
+        self.btn_search.clicked.connect(self.currentRow)
+    
+    def currentRow(self):
+        qlist = self.tableWidget.selectedItems()
+        print(qlist)
+        for q in qlist:
+            # print(q.text())
+            print(q.row())  
+            print(self.tableWidget.item(q.row(), 1).text())
+        # self.C_id= q.row()
+        os.environ['setCurrentCrimeID'] = str(q.row())
+        self.switch_window_new.emit()
+
     def retranslateUi(self, Userlist):
         _translate = QtCore.QCoreApplication.translate
         Userlist.setWindowTitle(_translate("Userlist", "Dialog"))
@@ -108,37 +127,38 @@ class Ui_Userlist(object):
         self.Label_user.setText(_translate("Userlist", "Users"))
         self.btn_search.setText(_translate("Userlist", "Search"))
         item = self.tableWidget.horizontalHeaderItem(0)
-        item.setText(_translate("Userlist", "Name"))
+        item.setText(_translate("Userlist", "Date"))
         item = self.tableWidget.horizontalHeaderItem(1)
-        item.setText(_translate("Userlist", "Username"))
+        item.setText(_translate("Userlist", "Overview"))
         item = self.tableWidget.horizontalHeaderItem(2)
-        item.setText(_translate("Userlist", "Mobile No."))
+        item.setText(_translate("Userlist", "Description."))
         item = self.tableWidget.horizontalHeaderItem(3)
-        item.setText(_translate("Userlist", "Email Id"))
+        item.setText(_translate("Userlist", "location"))
+        # self.switch_window.connect(print("a"))
 
     def select_data(self):
         try:
             mydb = mysql_comn.mydb
 
             mycursor = mydb.cursor()
-            mycursor.execute("SELECT * FROM acc")
+            mycursor.execute("SELECT * FROM crimereport")
 
             result = mycursor.fetchall()
 
             self.tableWidget.setRowCount(0)
 
             for row_number, row_data in enumerate(result):
-                uName = row_data[2]
-                uUserName = row_data[1]
-                uMob = row_data[5]
-                uEmail = row_data[4]
+                Date = row_data[2]
+                Overview = row_data[5]
+                Description = row_data[8]
+                location = row_data[6]
 
                 self.tableWidget.insertRow(row_number)
 
-                self.tableWidget.setItem(row_number, 0, QTableWidgetItem(str(uName)))
-                self.tableWidget.setItem(row_number, 1, QTableWidgetItem(str(uUserName)))
-                self.tableWidget.setItem(row_number, 2, QTableWidgetItem(str(uMob)))
-                self.tableWidget.setItem(row_number, 3, QTableWidgetItem(str(uEmail)))
+                self.tableWidget.setItem(row_number, 0, QTableWidgetItem(str(Date)))
+                self.tableWidget.setItem(row_number, 1, QTableWidgetItem(str(Overview)))
+                self.tableWidget.setItem(row_number, 2, QTableWidgetItem(str(Description)))
+                self.tableWidget.setItem(row_number, 3, QTableWidgetItem(str(location)))
                # self.tableWidget.setEditTriggers(QtWidgets.QTableWidget.NoEditTriggers)
 
         except mc.Error as e:
