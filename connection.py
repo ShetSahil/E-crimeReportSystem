@@ -12,7 +12,10 @@ from crime import Ui_pnl_user as page6
 from casestatus import Ui_Dialog as page7
 from pendingcases import Ui_Dialog as page8
 from userlist import Ui_Userlist as page9
+from viewrep import Ui_ReportForm as page10
 
+
+# crime_id = 0
 class Login(QtWidgets.QWidget,page1):
     switch_window = QtCore.pyqtSignal()
     switch_window2 = QtCore.pyqtSignal()
@@ -115,13 +118,29 @@ class pendingcases(QtWidgets.QWidget,page8):
         
 class userlist(QtWidgets.QWidget,page9):
     switch_window = QtCore.pyqtSignal()
+    switch_window2 = QtCore.pyqtSignal()
     #switch_window2 = QtCore.pyqtSignal()
     # switch_window3 = QtCore.pyqtSignal()
-
+    
     def __init__(self):
+        # global crime_id
         QtWidgets.QWidget.__init__(self)
         self.setupUi(self)
         self.Btn_back.clicked.connect(lambda : self.switch_window.emit())
+        self.switch_window_new.connect(lambda : self.switch_window2.emit())
+        # self.pushButton_submitsignal2.connect(lambda : self.switch_window2.emit())
+        # self.pushButton_2.clicked.connect(lambda : self.switch_window3.emit())
+        
+        
+class viewReport(QtWidgets.QWidget,page10):
+    # switch_window = QtCore.pyqtSignal()
+    #switch_window2 = QtCore.pyqtSignal()
+    # switch_window3 = QtCore.pyqtSignal()
+    def __init__(self):
+        # global crime_id
+        QtWidgets.QWidget.__init__(self)
+        self.setupUi(self)
+        # self.Btn_back.clicked.connect(lambda : self.switch_window.emit())
         # self.pushButton_submitsignal2.connect(lambda : self.switch_window2.emit())
         # self.pushButton_2.clicked.connect(lambda : self.switch_window3.emit())
         
@@ -198,14 +217,24 @@ class Controller:
         #self.newuser.switch_window2.connect(self.show_officer_page)
         self.newuser.close()
         self.newuser5.show()
- 
+
+    def show_viewreport(self):
+        self.newuser7 = viewReport()
+        # self.newuser7.switch_window.connect(self.show_officer_page)
+        #self.newuser.switch_window2.connect(self.show_officer_page)
+        self.newuser6.close()
+        self.newuser7.show()
+
     def show_userlist_page(self):
         self.newuser6 = userlist()
         self.newuser6.switch_window.connect(self.show_officer_page)
+        self.newuser6.switch_window2.connect(self.show_viewreport)
         #self.newuser.switch_window2.connect(self.show_officer_page)
         self.newuser.close()
         self.newuser6.show()
-        
+
+
+ 
 
 def main():
     app = QtWidgets.QApplication(sys.argv)

@@ -14,10 +14,13 @@ import sys
 from PyQt5.QtWidgets import QMessageBox
 import mysql.connector
 from datetime import date, datetime#tocopy
+import mysql_comn
+import os
 
 class Ui_pnl_user(object):
     #pushButton_submitsignal2 = QtCore.pyqtSignal()
     def setupUi(self, pnl_user):
+        print("from crime page" , os.getenv('UserID'))
         timer = QtCore.QTimer(pnl_user)#tocopy
         timer.timeout.connect(lambda: self.retranslateUi(pnl_user))#tocopy
         timer.start(1000)#tocopy    
@@ -243,18 +246,13 @@ class Ui_pnl_user(object):
         isvalid=True
                 
         if all((len(date1),checkbox, len(time1), len(type1), len(overview),len(location),len(gender),len(description))):
-                try:     
-                        mydb = mysql.connector.connect(
-                        host="localhost",
-                        user="root",
-                        password="",
-                        database="dbms"
-                        )
+                try:
+                        mydb = mysql_comn.mydb
                         mycursor = mydb.cursor()
                         
                         AmountOfRow = mycursor.rowcount
-                        sql = "INSERT INTO crimereport (`Date`,`Time`,`Type`,`Overview`,`Location`,`Gender`,`Description`) VALUES (%s, %s,%s, %s,%s, %s,%s)"
-                        val = (date1, time1,type1,overview,location,gender,description)
+                        sql = "INSERT INTO crimereport (`P_id` , `Date`,`Time`,`Type`,`Overview`,`Location`,`Gender`,`Description`, `status`) VALUES (%s,%s, %s,%s, %s,%s, %s,%s,%s)"
+                        val = (os.getenv('UserID'),date1, time1,type1,overview,location,gender,description, "pending")
                         mycursor.execute(sql, val)
                         mydb.commit()
                         

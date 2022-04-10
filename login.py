@@ -12,6 +12,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox
 import res,sys
 import mysql.connector
+import mysql_comn
+import os
 
 class Ui_Dialog(object):
     pushButton_submitsignal = QtCore.pyqtSignal()
@@ -150,16 +152,11 @@ class Ui_Dialog(object):
                     
         print('Button Clicked')
         print(self.lineEdit.text())
-        mydb = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        password="",
-        database="dbms"
-        )
+        mydb = mysql_comn.mydb
 
         mycursor = mydb.cursor()
 
-        mycursor.execute("SELECT username , pwd FROM acc where username = '%s' and pwd = '%s'" % (self.lineEdit.text(),self.lineEdit_2.text()))
+        mycursor.execute("SELECT `Srno.`,  `username` , `pwd` FROM acc where username = '%s' and pwd = '%s'" % (self.lineEdit.text(),self.lineEdit_2.text()))
         # mycursor.execute("SELECT username , password FROM registration where username = 'sahil' and password = '1234'")
 
         myresult = mycursor.fetchall()
@@ -172,6 +169,8 @@ class Ui_Dialog(object):
                 msg.setIcon(QMessageBox.Warning)
                 x = msg.exec_()
         else:
+                for key in myresult:
+                        os.environ['UserID'] = str(key[0])
                 msg = QMessageBox()
                 msg.setWindowTitle("successfull")
                 msg.setText("login Successfull")
